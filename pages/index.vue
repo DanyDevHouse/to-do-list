@@ -1,17 +1,9 @@
 <template>
   <div class="container">
-    <auth-form />
+    {{'user has been logged: '+ this.$store.state.authorization.userAuthorized}}
     <h1 class="title">to-do-list</h1>
   </div>
 </template>
-
-<script lang="ts">
-import Vue from 'vue'
-import AuthForm from '~/components/AuthForm.vue'
-
-export default Vue.extend({
-  components: { AuthForm },})
-</script>
 
 <style>
 .container {
@@ -45,3 +37,15 @@ export default Vue.extend({
   padding-top: 15px;
 }
 </style>
+<script>
+export default {
+  data() {
+    return{
+
+    }
+  },
+  beforeMount(){
+    this.$store.commit('authorization/SetUserData')
+  }
+}
+</script>

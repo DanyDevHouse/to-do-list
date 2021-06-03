@@ -41,6 +41,10 @@
       <el-button type="primary" @click="submitForm('ruleForm')" v-if="codeAccept">Log in</el-button>
     </el-form-item>
   </el-form>
+  <el-col :span="24" :offset="0">
+    <el-button round @click="loginWithGoogle()">Login with Google</el-button>
+  </el-col>
+  
 </el-row>
 
     
@@ -94,36 +98,23 @@ export default {
       labelPosition: 'top',
       isMobileAuth: false,
       showCodeField: false,
-      codeAccept: false
+      codeAccept: false,
+      createNewUser: false
     }
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+   submitForm(formName) {
+      this.$refs[formName].validate( (valid) => {
         if (valid) {
-         const res = this.$fb.auth().signInWithEmailAndPassword(this.ruleForm.email, this.ruleForm.password).then((userCredential) => {
-            this.$store.commit('authorization/UserLogged')
-            const user = {
-              name: userCredential.user.displayName,
-              email: userCredential.user.email,
-              phoneNumber: userCredential.user.phoneNumber,
-              photoURL: userCredential.user.photoURL,
-              uid: userCredential.user.uid
-            }
-            console.log(userCredential.user)
-            // document.cookie = `user_token=${base64UrlEncode(user)}; max-age=604800`;
-            
-          })
-          .catch((error) => {
-            console.error(error)
-          });
-          // const res = this.$store.dispatch('authorization/LogIn', { email: this.ruleForm.email, password: this.ruleForm.password})
-          console.log(res)
+          this.$store.dispatch('authorization/LogInByEmail', { email: this.ruleForm.email, password: this.ruleForm.password})
         } else {
           console.log('error submit!!')
           return false
         }
       })
+    },
+    loginWithGoogle(){
+      this.$store.dispatch('authorization/LogInByGoogleAccount', window.innerWidth)
     },
     SendCode(){
         if(this.ruleForm.phone != '' && this.ruleForm.phone.length == 12) {

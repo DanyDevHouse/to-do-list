@@ -1,13 +1,21 @@
 <template>
   <div>
     <el-menu class="el-menu-demo" mode="horizontal">
-      <el-col :lg="12" :offset="0">
-        <el-button @click="drawer = true" size="medium" type="text"> 
-            <i class="el-icon-menu"></i>
-        </el-button>
-      </el-col>
-
-      <!-- <el-menu-item v-for="(link, index) in links" :index="index" :key="link.title" :to="link.to">{{link.title}}</el-menu-item> -->
+      <el-row :gutter="20" type="flex" align="center">
+        <el-col :span="22" :offset="0">
+          <el-menu-item>
+            <el-button @click="drawer = true" size="medium" > 
+                <i class="el-icon-menu"></i>
+            </el-button>
+          </el-menu-item>
+        </el-col>
+        <el-col :span="2" :offset="0">
+          <el-menu-item>
+            <el-button type="text" size="default" @click="logOutHandler()" v-if="showLogOut">logout</el-button>
+          </el-menu-item>
+        </el-col>
+      </el-row>
+      
     </el-menu>
     <el-drawer
       title="Menu"
@@ -50,6 +58,11 @@ export default {
       activeIndex: 0,
     }
   },
+  computed: {
+    showLogOut: function() {
+      return this.$store.state.authorization.userAuthorized
+    }
+  },
   methods: {
     handleClose(done) {
       done()
@@ -59,6 +72,9 @@ export default {
     },
     handleCloseMenuTabs(key, keyPath) {
         console.log(key, keyPath);
+    },
+    logOutHandler(){
+      this.$store.commit('authorization/UserLogout');
     }
   },
 }
