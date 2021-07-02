@@ -1,8 +1,13 @@
 <template>
-  <div>
-    <Header />
-    <Nuxt />
-  </div>
+  <el-container>
+    <el-header>
+      <Header />
+    </el-header>
+    <el-main>
+      <Nuxt />
+    </el-main>
+  </el-container>
+
 </template>
 
 <style>

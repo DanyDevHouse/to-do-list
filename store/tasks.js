@@ -1,10 +1,12 @@
 export const state = () => ({
     currentTask: [],
-    taskLoaded: false
+    taskLoaded: false,
+    message: null,
+    errorMessage: false
 })
 export const mutations = {
     GetTasks(state, payload) {
-        state.currentTask = payload.filter(t => t.status === 'active')
+        state.currentTask = payload
         state.taskLoaded = true
     },
     DeleteTask(state, taskId) {
@@ -13,6 +15,13 @@ export const mutations = {
     },
     AddTaskToStore(state, task) {
         state.currentTask.push(task)
+    },
+    UpdateTask(state, task){
+      const taskIndex = state.currentTask.findIndex(t => t.taskId === task.taskId)
+      state.currentTask.splice(taskIndex, 1, task)
+    },
+    SetMessage(state, message){
+        state.message = message
     }
 }
 export const actions = {
@@ -25,10 +34,12 @@ export const actions = {
     DeleteTask({ commit }, taskId) {
         commit('DeleteTask', taskId)
         this.$fire.firestore.collection("currentTask").doc(taskId).delete().then(() => {
-            console.log("Document successfully deleted!");
+            commit('SetMessage', 'Your task successfully deleted!', false)
         }).catch((error) => {
             console.error("Error removing document: ", error);
+            commit('SetMessage', 'Error removing task: ' + error.message, true)
         });
+        
     },
     async addTaskToBD({ commit }, task) {
         const mutateTask = {
@@ -37,7 +48,18 @@ export const actions = {
         }
         commit('AddTaskToStore', mutateTask)
         await this.$fire.firestore.collection("currentTask").doc(mutateTask.taskId).set(mutateTask).then((res) => {
-            console.log("Document successfully written!", res);
+        }).catch(error => {
+            commit('SetMessage', 'Error removing task: ' + error.message, true)
+        });
+    },
+    EditTask({ commit }, task){
+        commit('UpdateTask', task)
+        this.$fire.firestore.collection("currentTask").doc(task.taskId).update(task)
+        .then(() => {
+           commit('SetMessage', 'Your task successfully updated!', false)
+        })
+        .catch((error) => {
+            commit('SetMessage', "Error updating task: " + error, true)
         });
     }
 }

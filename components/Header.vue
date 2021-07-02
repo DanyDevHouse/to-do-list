@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-menu class="el-menu-demo" mode="horizontal">
-      <el-row :gutter="20" type="flex" align="center">
+      <el-row :gutter="20" type="flex" align="middle">
         <el-col :span="22" :offset="0">
           <el-menu-item>
             <el-button @click="drawer = true" size="medium" > 
@@ -24,7 +24,6 @@
       :before-close="handleClose"
     >
     <el-menu
-      default-active="2"
       class="el-menu-vertical-demo"
       @open="handleOpenMenuTabs"
       @close="handleCloseMenuTabs">
